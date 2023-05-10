@@ -16,12 +16,9 @@
 
             Asset asset = new Asset (name, sell_value, buy_value);
 
-            while (true)
-            {
-                CallAPI call = new CallAPI();
-                await call.checkValue(asset);
-                Thread.Sleep(10000);                
-            }
+            CallAPI call = new CallAPI();
+            await call.checkValue(asset);
+                                
         }
     }
 }    
