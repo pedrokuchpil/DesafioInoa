@@ -1,25 +1,29 @@
 using System.Net;
-using SendGrid;
-using SendGrid.Helpers.Mail;
+using System.Net.Mail;
+using Microsoft.Extensions.Configuration;
 
 namespace Broker
 {
     public class Email
     {
         public string status { get; set; } = "NONSENT";
-        public string apiKey { get; set; }
-        public SendGridClient client { get; set; }
-        public Email (string apiKey)
+
+        public SmtpClient smtpClient { get; set; }
+        public Email (string configfile)
         {
-            this.apiKey = apiKey;
-            this.client = new SendGridClient(apiKey);
+            var config = new ConfigurationBuilder()
+                .AddJsonFile(configfile).Build();
+            this.smtpClient = new SmtpClient(config["Smtp:Host"])
+            {
+                Port = int.Parse(config["Smtp:Port"]),
+                Credentials = new NetworkCredential(config["Smtp:Username"], config["Smtp:Password"]),
+                EnableSsl = true,
+                DeliveryMethod = SmtpDeliveryMethod.Network
+            };
         }
-        public async Task sendEmail(string receiverEmail, string emailSubject, string emailContent, string htmlContent)
+        public void sendEmail(string receiverEmail, string emailSubject, string emailContent)
         {
-            var senderEmail = new EmailAddress("pedrokuchpil@gmail.com", "Broker Pedro");
-            var receiver = new EmailAddress(receiverEmail);
-            var msg = MailHelper.CreateSingleEmail(senderEmail, receiver, emailSubject, emailContent, htmlContent);
-            var resp = await client.SendEmailAsync(msg).ConfigureAwait(false);
+            smtpClient.Send("broker@pk.com", receiverEmail, emailSubject, emailContent);
         }
     }
 }    
