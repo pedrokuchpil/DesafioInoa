@@ -15,7 +15,7 @@ namespace Broker
                 .AddJsonFile(configfile).Build();
             this.smtpClient = new SmtpClient(config["Smtp:Host"])
             {
-                Port = int.Parse(config["Smtp:Port"]),
+                Port = int.Parse(config["Smtp:Port"]!),
                 Credentials = new NetworkCredential(config["Smtp:Username"], config["Smtp:Password"]),
                 EnableSsl = true,
                 DeliveryMethod = SmtpDeliveryMethod.Network

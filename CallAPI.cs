@@ -15,7 +15,7 @@ namespace Broker
             var json = await result.Content.ReadAsStringAsync();
             var root = JObject.Parse(json);
             
-            double value = root["results"][0]["regularMarketPrice"].ToObject<double>();
+            double value = root["results"]![0]!["regularMarketPrice"]!.ToObject<double>();
 
             return value;
             
