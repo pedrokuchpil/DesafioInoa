@@ -18,30 +18,32 @@
 
             var email = new Email("stmpconfig.json");
 
+            string status = "NONSENT";
+
             CallAPI call = new CallAPI();
             while(true)
             {     
                 double value = await call.checkValue(asset);
 
-                if (value >= asset.sell_value && email.status != "SENT_SELL")
+                if (value >= asset.sell_value && status != "SENT_SELL")
                 {
                     Console.WriteLine($"Vender {asset.name}");
-                    email.sendEmail("pedrokuchpil@uol.com.br", "Venda de ação", $"Venda {asset.name} ao preço de {value}");
-                    email.status = "SENT_SELL";
+                    email.sendEmail("Venda de ação", $"Venda {asset.name} ao preço de {value}");
+                    status = "SENT_SELL";
                 }
-                else if (value <= asset.buy_value && email.status != "SENT_BUY")
+                else if (value <= asset.buy_value && status != "SENT_BUY")
                 {
                     Console.WriteLine($"Comprar {asset.name}");
-                    email.sendEmail("pedrokuchpil@uol.com.br", "Compra de ação", $"Compre {asset.name} ao preço de {value}");
-                    email.status = "SENT_BUY";
+                    email.sendEmail("Compra de ação", $"Compre {asset.name} ao preço de {value}");
+                    status = "SENT_BUY";
                 }
                 else if (value < asset.sell_value && value > asset.buy_value)
                 {   
-                    if (email.status != "NONSENT")
+                    if (status != "NONSENT")
                     {
                         Console.WriteLine($"O valor da ação {asset.name} não corresponde mais ao desejado.");
-                        email.sendEmail("pedrokuchpil@uol.com.br", $"O valor de {asset.name} mudou", $"O valor de {asset.name} mudou e não corresponde mais ao desejado.");
-                        email.status = "NONSENT";
+                        email.sendEmail($"O valor de {asset.name} mudou", $"O valor de {asset.name} mudou e não corresponde mais ao desejado.");
+                        status = "NONSENT";
                     }
                     else
                     {

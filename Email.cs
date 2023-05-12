@@ -6,9 +6,8 @@ namespace Broker
 {
     public class Email
     {
-        public string status { get; set; } = "NONSENT";
-
-        public SmtpClient smtpClient { get; set; }
+        private SmtpClient smtpClient { get; set; }
+        private string receiverEmail { get; set; }
         public Email (string configfile)
         {
             var config = new ConfigurationBuilder()
@@ -20,8 +19,9 @@ namespace Broker
                 EnableSsl = true,
                 DeliveryMethod = SmtpDeliveryMethod.Network
             };
+            this.receiverEmail = config["ReceiverEmail"]!;
         }
-        public void sendEmail(string receiverEmail, string emailSubject, string emailContent)
+        public void sendEmail(string emailSubject, string emailContent)
         {
             smtpClient.Send("broker@pk.com", receiverEmail, emailSubject, emailContent);
         }
